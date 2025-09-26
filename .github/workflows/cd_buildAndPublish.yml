@@ -1,0 +1,57 @@
+name: CD - Build and Publish Docker Image
+
+on:
+    # Temporarily disabling push trigger until we have versioning, and can only push if necessary
+    workflow_dispatch:
+    
+jobs:
+    build-and-push:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v5
+
+            - name: Get metadata
+              id: meta
+              uses: docker/metadata-action@v5
+              with:
+                  images: moriryuuji3/next-web-app
+                  tags: |
+                    # ranked higher so it gets used as the cache tag
+                    type=semver,pattern={{major}}.{{minor}},priority=901
+                    type=semver,pattern={{version}}
+                    type=edge,branch=main
+
+            # Much easier to use jq to parse JSON on a file
+            - name: Create file from output
+              uses: 1arp/create-a-file-action@0.4.5
+              with:
+                path: /tmp
+                isAbsolutePath: true
+                file: 'tags.json'
+                content: ${{ steps.meta.outputs.json }}
+
+            - name: "Get Cache Tag"
+              id: cache-tag
+              run: |
+                # Extract the first tag from the JSON array
+                CACHE_TAG=$(jq -r '.tags[0]' /tmp/tags.json)
+                echo "Cache Tag: $CACHE_TAG"
+
+                echo "CACHE_TAG=${CACHE_TAG}" >> $GITHUB_OUTPUT
+
+            - name: Log in to Docker Hub
+              uses: docker/login-action@v3
+              with:
+                    username: ${{ vars.DOCKER_HUB_USERNAME }}
+                    password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+            - name: Build and push Docker image
+              uses: docker/build-push-action@v6
+              with:
+                  file: ./packages/next-web-app/Dockerfile
+                  push: true
+                  tags: ${{ steps.meta.outputs.tags }}
+                  labels: ${{ steps.meta.outputs.labels }}
+                  cache-from: ${{ steps.cache-tag.outputs.CACHE_TAG }}
+
