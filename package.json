@@ -1,0 +1,10 @@
+{
+  "name": "@ryuuji3/ci-cd-pipeline-docker-example",
+  "private": true,
+  "version": "1.0.0",
+  "description": "An example repository demonstrating a basic CI/CD pipeline publishing docker images",
+  "keywords": [],
+  "author": "ryuuji3 <mori.ryuuji3@gmail.com>",
+  "license": "MIT",
+  "packageManager": "pnpm@10.11.0"
+}
