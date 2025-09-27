@@ -1,14 +1,7 @@
-name: CI
+name: CI - Verify Code
 
 on:
     pull_request:
-        types:
-            - opened
-            - synchronize
-            - reopened
-            # TODO: will unfortunately re-run our tests, but this can also include changing the base ref
-            # would probably be best to separate the PR title check into another workflow as another blocking check
-            - edited
         branches:
             - main
 
@@ -49,27 +42,10 @@ jobs:
             run: |
               pnpm --filter ${{ matrix.package.package }} --if-present test
 
-    verify-pr-title:
-        name: Verify PR Title
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v5
-            - uses: ./.github/actions/install-monorepo
-              with:
-                branch: ${{ github.head_ref }}
-            - name: Check PR title
-              env:
-                PR_TITLE: ${{ github.event.pull_request.title }}
-              run: |
-                echo $PR_TITLE | pnpm commitlint
-              
-
-
     ci-passed:
         name: CI Passed
         if: always()
         needs:
-            - verify-pr-title
             - run-tests
         runs-on: ubuntu-latest
         steps:
