@@ -17,18 +17,9 @@ runs:
   using: 'composite'
   steps:
       - uses: actions/checkout@v5
+      - uses: ./install-monorepo
         with:
-          fetch-depth: 0
-          ref: ${{ inputs.branch }}
-      - uses: pnpm/action-setup@v4
-        with:
-          run_install: false
-      - uses: actions/setup-node@v5
-        with:
-          cache: 'pnpm'
-      - name: Install
-        shell: bash
-        run: pnpm i
+          branch: ${{ inputs.branch }}
       
       - name: Find affected packages
         shell: bash

@@ -1,0 +1,46 @@
+name: CI
+
+on:
+    pull_request:
+        types:
+            - opened
+            - synchronize
+            - reopened
+            # TODO: will need to prevent re-running tests if the event type is only edited
+            - edited
+        branches:
+            - main
+
+# Prevent concurrent runs on consecutive commits
+concurrency:
+    group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+    cancel-in-progress: true
+
+jobs:
+    verify-pr-title:
+        name: Verify PR Title
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v5
+            - uses: ./.github/actions/install-monorepo
+              with:
+                branch: ${{ github.head_ref }}
+            - name: Check PR title
+              env:
+                PR_TITLE: ${{ github.event.pull_request.title }}
+              run: |
+                echo $PR_TITLE | pnpm commitlint
+              
+
+
+    ci-passed:
+        name: CI Passed
+        if: always()
+        needs:
+            - verify-pr-title
+        runs-on: ubuntu-latest
+        steps:
+            - name: Assert that all jobs are green
+              uses: re-actors/alls-green@release/v1
+              with:
+                jobs: ${{ toJSON(needs) }}

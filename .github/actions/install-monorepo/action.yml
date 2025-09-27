@@ -1,0 +1,24 @@
+name: Install Monorepo
+description: A GitHub Action to install the monorepo
+
+inputs:
+  branch:
+    description: 'The git reference of the current branch'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.branch }}
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+      - uses: actions/setup-node@v5
+        with:
+          cache: 'pnpm'
+      - name: Install
+        shell: bash
+        run: pnpm i
