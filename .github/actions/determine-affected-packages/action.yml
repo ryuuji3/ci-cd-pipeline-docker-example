@@ -2,8 +2,12 @@ name: Detect Affected Packages
 description: A GitHub Action to determine which packages have been affected by recent changes in a monorepo.
 
 inputs:
-  ref:
-    description: 'The git reference to compare against (e.g., main, origin/main, HEAD~1)'
+  head_ref:
+    description: 'The git reference of the current commit (HEAD)'
+    required: false
+    default: 'HEAD'
+  since_ref:
+    description: 'The git reference to compare against'
     required: true
 outputs:
   affected_packages:
@@ -16,7 +20,7 @@ runs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-          ref: ${{ inputs.ref }}
+          ref: ${{ inputs.head_ref }}
       - uses: pnpm/action-setup@v4
         with:
           run_install: false
@@ -31,7 +35,7 @@ runs:
         shell: bash
         id: find-affected-packages
         env:
-          CHANGED_SINCE: ${{ inputs.ref }}
+          CHANGED_SINCE: ${{ inputs.since_ref }}
         run: |
           # Find affected packages
           affected_packages=$(lerna ls --since $CHANGED_SINCE)

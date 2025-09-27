@@ -22,7 +22,7 @@ jobs:
               uses: ./.github/actions/determine-affected-packages
               with:
                 # Want to compare to previous commit on branch
-                ref: ${{ github.event.before }}
+                since_ref: ${{ github.event.before }}
 
             # Much easier to use jq to parse JSON on a file
             - name: Create file from output
