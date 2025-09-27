@@ -39,10 +39,11 @@ jobs:
             - name: "Get Packages to Build"
               id: packages-to-build
               run: |
+                cat /tmp/affected_packages.json
                 # Extract package names from the JSON array
                 PACKAGE_NAMES=$(jq -r '.[].package' /tmp/affected_packages.json)
 
-                echo $PACKAGE_NAMES
+                echo "PACKAGE_NAMES=$PACKAGE_NAMES"
 
                 echo "[]" > /tmp/packages_to_build.json
                 for package in $PACKAGE_NAMES; do
