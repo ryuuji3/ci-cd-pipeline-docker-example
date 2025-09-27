@@ -6,5 +6,8 @@
   "keywords": [],
   "author": "ryuuji3 <mori.ryuuji3@gmail.com>",
   "license": "MIT",
-  "packageManager": "pnpm@10.11.0"
+  "packageManager": "pnpm@10.11.0",
+  "devDependencies": {
+    "lerna": "^9.0.0"
+  }
 }

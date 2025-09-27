@@ -1,0 +1,67 @@
+name: Detect Affected Packages
+description: A GitHub Action to determine which packages have been affected by recent changes in a monorepo.
+
+inputs:
+  ref:
+    description: 'The git reference to compare against (e.g., main, origin/main, HEAD~1)'
+    required: true
+outputs:
+  affected_packages:
+    description: 'A JSON array of affected packages and their changed files'
+    value: ${{ steps.find-changed-packages.outputs.changed_packages }}
+
+runs:
+  using: 'composite'
+  steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.ref }}
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+      - uses: actions/setup-node@v5
+        with:
+          cache: 'pnpm'
+      - name: Install
+        shell: bash
+        run: pnpm i
+      
+      - name: Find affected packages
+        shell: bash
+        id: find-affected-packages
+        env:
+          CHANGED_SINCE: ${{ inputs.ref }}
+        run: |
+          # Find affected packages
+          changed_since=origin/$CHANGED_SINCE
+          affected_packages=$(lerna ls --since $changed_since)
+
+          # Find changed files in the affected packages
+          echo '[]' > /tmp/affected_packages.json
+
+          # Generate JSON array with structure { package: "package-name", changed_files: ["file1", "file2"] }
+          for package in $affected_packages; do
+            changed_files=$(git diff --name-only $changed_since...HEAD -- `pnpm --filter $package exec pwd`)
+
+            if [ -z "$changed_files" ]; then
+              continue
+            fi
+
+            while read -r file; do
+              jq --arg pkg "$package" --arg file "$file" '
+                . as $in |
+                map(select(.package == $pkg)) as $existing |
+                if ($existing | length) > 0 then
+                  map(if .package == $pkg then .changed_files += [$file] else . end)
+                else
+                  $in + [{package: $pkg, changed_files: [$file]}]
+                end
+              ' /tmp/affected_packages.json > /tmp/affected_packages_tmp.json
+              mv /tmp/affected_packages_tmp.json /tmp/affected_packages.json
+            done <<< "$changed_files"
+          done
+
+          # Output the affected packages JSON
+          cat /tmp/affected_packages.json
+          echo $(jq -c '.' /tmp/affected_packages.json) >> $GITHUB_OUTPUT

@@ -1,21 +1,82 @@
 name: CD - Build and Publish Docker Image
 
 on:
-    # Temporarily disabling push trigger until we have versioning, and can only push if necessary
-    workflow_dispatch:
+    push:
+        branches:
+            - main
+        tags:
+            - '*.*.*'
+
+env:
+    DOCKER_VENDOR: ${{ vars.DOCKER_HUB_USERNAME }}
     
 jobs:
-    build-and-push:
+    determine-which-packages-to-build:
         runs-on: ubuntu-latest
+        outputs:
+            packages_to_build: ${{ steps.packages-to-build.outputs.packages_to_build }}
+        steps:
+            - uses: actions/checkout@v5
+            - name: Determine affected packages
+              id: determine-affected-packages
+              uses: ./.github/actions/determine-affected-packages
+              with:
+                ref: ${{ github.base_ref }}
+
+            # Much easier to use jq to parse JSON on a file
+            - name: Create file from output
+              uses: 1arp/create-a-file-action@0.4.5
+              with:
+                path: /tmp
+                isAbsolutePath: true
+                file: 'affected_packages.json'
+                content: ${{ steps.determine-affected-packages.outputs.affected_packages }}
+
+            # Only builds packages that have a Dockerfile and were affected by changes
+            # TODO: We should also check what files were changed; we can skip building if non-code files were changed (e.g., README.md)
+            - name: "Get Packages to Build"
+              id: packages-to-build
+              run: |
+                # Extract package names from the JSON array
+                PACKAGE_NAMES=$(jq -r '.[].package' /tmp/affected_packages.json | tr '\n' ' ')
+
+                echo "[]" > /tmp/packages_to_build.json
+                for package in $PACKAGE_NAMES; do
+                  # Find the Dockerfile in the package directory
+                  if [ -f "$(pnpm --filter $package exec pwd)/Dockerfile" ]; then
+                    jq --arg pkg "$package" '. + [$pkg]' /tmp/packages_to_build.json > /tmp/packages_to_build_tmp.json
+                    mv /tmp/packages_to_build_tmp.json /tmp/packages_to_build.json
+                  fi
+                done
+
+                echo $(jq -c '.' /tmp/packages_to_build.json) >> $GITHUB_OUTPUT
+
+    build-and-push:
+        needs: determine-which-packages-to-build
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                package: ${{ fromJson(needs.determine-which-packages-to-build.outputs.packages_to_build) }}
         steps:
             - name: Checkout repository
               uses: actions/checkout@v5
+
+            - name: Get Docker Image Name from Package
+              id: get-image-name
+              run: |
+                PACKAGE_NAME=${{ matrix.package }}
+                echo "PACKAGE_NAME=$PACKAGE_NAME"
+                VENDOR_NAME="${{ env.DOCKER_VENDOR }}"
+                # Image name doesn't have the scope (@scope/) part
+                IMAGE_NAME="$VENDOR_NAME/${PACKAGE_NAME#@*/}"
+                echo "IMAGE_NAME=$IMAGE_NAME"
+                echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_OUTPUT
 
             - name: Get metadata
               id: meta
               uses: docker/metadata-action@v5
               with:
-                  images: moriryuuji3/next-web-app
+                  images: ${{ steps.get-image-name.outputs.IMAGE_NAME }}
                   tags: |
                     # ranked higher so it gets used as the cache tag
                     type=semver,pattern={{major}}.{{minor}},priority=901
@@ -50,7 +111,8 @@ jobs:
               uses: docker/build-push-action@v6
               with:
                   file: ./packages/next-web-app/Dockerfile
-                  push: true
+                  push: false # Temporarily disabling push
+                  load: true
                   tags: ${{ steps.meta.outputs.tags }}
                   labels: ${{ steps.meta.outputs.labels }}
                   cache-from: ${{ steps.cache-tag.outputs.CACHE_TAG }}
