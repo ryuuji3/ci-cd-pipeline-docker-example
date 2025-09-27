@@ -2,9 +2,9 @@
   "name": "@ryuuji3/next-web-app",
   "version": "0.1.0",
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
-    "start": "next start",
+    "dev": "nx next:dev --turbopack",
+    "build": "nx next:build --turbopack",
+    "start": "nx next:start",
     "lint": "eslint"
   },
   "dependencies": {
