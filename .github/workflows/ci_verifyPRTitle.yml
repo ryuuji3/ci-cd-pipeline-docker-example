@@ -11,7 +11,7 @@ on:
 
 jobs:
     verify-pr-title:
-        name: Verify PR Title
+        name: Verify PR Title (temp change)
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v5
