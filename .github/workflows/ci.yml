@@ -18,6 +18,7 @@ concurrency:
 
 jobs:
     determine-which-tests-to-check:
+        name: Determine which tests to check
         runs-on: ubuntu-latest
         outputs:
             packages: ${{ steps.determine-affected-packages.outputs.affected_packages }}
