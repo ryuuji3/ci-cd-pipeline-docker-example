@@ -1,0 +1,20 @@
+name: CD - Tag Releases
+
+on:
+    workflow_dispatch:
+    push:
+        branches:
+            - main
+
+jobs:
+    tag-release:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v5
+            - name: Install monorepo
+              uses: ./.github/actions/install-monorepo
+              with:
+                branch: ${{ github.event.base_ref }}
+            - name: Tag Release
+              run: |
+                pnpm nx release --skip-publish

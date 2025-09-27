@@ -8,7 +8,7 @@ on:
         # branches:
         #    - main
         tags:
-            - '*.*.*'
+            - 'v*.*.*'
 
 env:
     DOCKER_VENDOR: ${{ vars.DOCKER_HUB_USERNAME }}
