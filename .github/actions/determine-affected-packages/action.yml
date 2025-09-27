@@ -17,7 +17,7 @@ runs:
   using: 'composite'
   steps:
       - uses: actions/checkout@v5
-      - uses: ./install-monorepo
+      - uses: ./.github/actions/install-monorepo
         with:
           branch: ${{ inputs.branch }}
       
