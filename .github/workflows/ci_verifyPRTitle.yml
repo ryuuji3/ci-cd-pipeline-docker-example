@@ -11,7 +11,7 @@ on:
 
 jobs:
     verify-pr-title:
-        name: Verify PR Title (temp change)
+        name: Verify PR Title
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v5
@@ -22,4 +22,6 @@ jobs:
               env:
                 PR_TITLE: ${{ github.event.pull_request.title }}
               run: |
+                # Debug output
+                echo $PR_TITLE
                 echo $PR_TITLE | pnpm commitlint
