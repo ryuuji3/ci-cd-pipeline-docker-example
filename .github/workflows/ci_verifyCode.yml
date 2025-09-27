@@ -55,9 +55,15 @@ jobs:
               env:
                   NEEDS: ${{ toJson(needs) }}
               run: |
-                  # Debugging output
-                  echo $NEEDS | jq '.'
+                  # Produce a comma-delimited list from any skipped jobs
+                  # Assumption: any skipped workflow was skipped intentionally
+                  skipped_jobs=$(echo $NEEDS | jq -r 'to_entries | map(select(.value.result == "skipped")) | map(.key) | join(",")')
+
+                  # debugging output
+                  echo "skipped_jobs=$skipped_jobs"
+                  echo "skipped_jobs=$skipped_jobs" >> $GITHUB_OUTPUT
             - name: Assert that all jobs are green
               uses: re-actors/alls-green@release/v1
               with:
                 jobs: ${{ toJSON(needs) }}
+                allowed-skips: ${{ steps.get-skips.outputs.skipped_jobs }}
