@@ -25,6 +25,7 @@
     "react-dom": "19.0.0"
   },
   "scripts": {
-    "prepare": "husky"
+    "prepare": "husky",
+    "clean": "rm -rf {,**/}node_modules"
   }
 }
