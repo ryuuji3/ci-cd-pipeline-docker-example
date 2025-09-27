@@ -11,7 +11,7 @@ inputs:
 outputs:
   affected_packages:
     description: 'A JSON array of affected packages and their changed files'
-    value: ${{ steps.find-changed-packages.outputs.affected_packages }}
+    value: ${{ steps.find-affected-packages.outputs.affected_packages }}
 
 runs:
   using: 'composite'
