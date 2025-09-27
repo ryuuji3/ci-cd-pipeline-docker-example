@@ -54,6 +54,7 @@ jobs:
 
     build-and-push:
         needs: determine-which-packages-to-build
+        if: ${{ needs.determine-which-packages-to-build.outputs.packages_to_build != '[]' }}
         runs-on: ubuntu-latest
         strategy:
             matrix:
