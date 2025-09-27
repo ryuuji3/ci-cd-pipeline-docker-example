@@ -2,8 +2,11 @@ name: CD - Build and Publish Docker Image
 
 on:
     push:
-        branches:
-            - main
+        # I don't have multiple environments to simulate, so I'll just use tag-based for now
+        # The use case for main would be if we had a staging and production environment;
+        # staging would have the most recent changes at all times
+        # branches:
+        #    - main
         tags:
             - '*.*.*'
 
