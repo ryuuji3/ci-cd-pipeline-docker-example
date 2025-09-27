@@ -6,7 +6,8 @@ on:
             - opened
             - synchronize
             - reopened
-            # TODO: will need to prevent re-running tests if the event type is only edited
+            # TODO: will unfortunately re-run our tests, but this can also include changing the base ref
+            # would probably be best to separate the PR title check into another workflow as another blocking check
             - edited
         branches:
             - main
@@ -19,8 +20,6 @@ concurrency:
 jobs:
     determine-which-tests-to-check:
         name: Determine which tests to check
-        # Skip checks if the only change was editing the PR
-        if: ${{ github.event.action != 'edited' }}
         runs-on: ubuntu-latest
         outputs:
             packages: ${{ steps.determine-affected-packages.outputs.affected_packages }}
@@ -35,8 +34,6 @@ jobs:
 
     run-tests:
         needs: determine-which-tests-to-check
-        # Skip checks if the only change was editing the PR
-        if: ${{ github.event.action != 'edited' }}
         runs-on: ubuntu-latest
         strategy:
           matrix:
@@ -76,16 +73,7 @@ jobs:
             - run-tests
         runs-on: ubuntu-latest
         steps:
-            - name: Determine skips
-              id: determine-skips
-              env:
-                  GITHUB_EVENT_ACTION: ${{ github.event.action }}
-              run: |
-                  if [[ GITHUB_EVENT_ACTION == 'edited' ]]; then
-                    echo "allowed_skips=run-tests" >> $GITHUB_OUTPUT
-                  fi
             - name: Assert that all jobs are green
               uses: re-actors/alls-green@release/v1
               with:
                 jobs: ${{ toJSON(needs) }}
-                allowed-skips: ${{ steps.determine-skips.outputs.allowed_skips }}
