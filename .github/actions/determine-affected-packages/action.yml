@@ -34,15 +34,14 @@ runs:
           CHANGED_SINCE: ${{ inputs.ref }}
         run: |
           # Find affected packages
-          changed_since=origin/$CHANGED_SINCE
-          affected_packages=$(lerna ls --since $changed_since)
+          affected_packages=$(lerna ls --since $CHANGED_SINCE)
 
           # Find changed files in the affected packages
           echo '[]' > /tmp/affected_packages.json
 
           # Generate JSON array with structure { package: "package-name", changed_files: ["file1", "file2"] }
           for package in $affected_packages; do
-            changed_files=$(git diff --name-only $changed_since...HEAD -- `pnpm --filter $package exec pwd`)
+            changed_files=$(git diff --name-only $CHANGED_SINCE...HEAD -- `pnpm --filter $package exec pwd`)
 
             if [ -z "$changed_files" ]; then
               continue
