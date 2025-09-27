@@ -21,6 +21,9 @@
   ],
   "nxCloudId": "68d7e4f824251049f0b708e1",
   "release": {
-    "projects": ["packages/*"]
+    "projects": ["packages/*"],
+    "version": {
+      "conventionalCommits": true
+    }
   }
 }
