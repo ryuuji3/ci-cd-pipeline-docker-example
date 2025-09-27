@@ -21,6 +21,7 @@ jobs:
               id: determine-affected-packages
               uses: ./.github/actions/determine-affected-packages
               with:
+                branch: ${{ github.event.base_ref }}
                 # Want to compare to previous commit on branch
                 since_ref: ${{ github.event.before }}
 

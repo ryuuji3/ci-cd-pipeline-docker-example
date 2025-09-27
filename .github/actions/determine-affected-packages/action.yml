@@ -2,10 +2,9 @@ name: Detect Affected Packages
 description: A GitHub Action to determine which packages have been affected by recent changes in a monorepo.
 
 inputs:
-  head_ref:
-    description: 'The git reference of the current commit (HEAD)'
-    required: false
-    default: 'HEAD'
+  branch:
+    description: 'The git reference of the current branch'
+    required: true
   since_ref:
     description: 'The git reference to compare against'
     required: true
@@ -20,7 +19,7 @@ runs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-          ref: ${{ inputs.head_ref }}
+          ref: ${{ inputs.branch }}
       - uses: pnpm/action-setup@v4
         with:
           run_install: false
