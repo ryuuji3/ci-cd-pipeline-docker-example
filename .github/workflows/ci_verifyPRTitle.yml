@@ -1,0 +1,25 @@
+name: CI - Verify PR Title
+
+on:
+    pull_request:
+        types:
+            - opened
+            - reopened
+            - edited
+        branches:
+            - main
+
+jobs:
+    verify-pr-title:
+        name: Verify PR Title
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v5
+            - uses: ./.github/actions/install-monorepo
+              with:
+                branch: ${{ github.head_ref }}
+            - name: Check PR title
+              env:
+                PR_TITLE: ${{ github.event.pull_request.title }}
+              run: |
+                echo $PR_TITLE | pnpm commitlint

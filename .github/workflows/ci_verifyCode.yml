@@ -1,14 +1,7 @@
-name: CI
+name: CI - Verify Code
 
 on:
     pull_request:
-        types:
-            - opened
-            - synchronize
-            - reopened
-            # TODO: will unfortunately re-run our tests, but this can also include changing the base ref
-            # would probably be best to separate the PR title check into another workflow as another blocking check
-            - edited
         branches:
             - main
 
@@ -34,6 +27,7 @@ jobs:
 
     run-tests:
         needs: determine-which-tests-to-check
+        if: ${{ needs.determine-which-tests-to-check.outputs.packages != '[]' }}
         runs-on: ubuntu-latest
         strategy:
           matrix:
@@ -49,31 +43,27 @@ jobs:
             run: |
               pnpm --filter ${{ matrix.package.package }} --if-present test
 
-    verify-pr-title:
-        name: Verify PR Title
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v5
-            - uses: ./.github/actions/install-monorepo
-              with:
-                branch: ${{ github.head_ref }}
-            - name: Check PR title
-              env:
-                PR_TITLE: ${{ github.event.pull_request.title }}
-              run: |
-                echo $PR_TITLE | pnpm commitlint
-              
-
-
     ci-passed:
         name: CI Passed
         if: always()
         needs:
-            - verify-pr-title
             - run-tests
         runs-on: ubuntu-latest
         steps:
+            - name: Get skips
+              id: get-skips
+              env:
+                  NEEDS: ${{ toJson(needs) }}
+              run: |
+                  # Produce a comma-delimited list from any skipped jobs
+                  # Assumption: any skipped workflow was skipped intentionally
+                  skipped_jobs=$(echo $NEEDS | jq -r 'to_entries | map(select(.value.result == "skipped")) | map(.key) | join(",")')
+
+                  # debugging output
+                  echo "skipped_jobs=$skipped_jobs"
+                  echo "skipped_jobs=$skipped_jobs" >> $GITHUB_OUTPUT
             - name: Assert that all jobs are green
               uses: re-actors/alls-green@release/v1
               with:
                 jobs: ${{ toJSON(needs) }}
+                allowed-skips: ${{ steps.get-skips.outputs.skipped_jobs }}
