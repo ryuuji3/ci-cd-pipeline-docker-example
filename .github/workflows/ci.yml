@@ -25,7 +25,7 @@ jobs:
           - uses: actions/checkout@v5
           - name: Determine affected packages
             id: determine-affected-packages
-            uses: ./.github/determine-affected-packages
+            uses: ./.github/actions/determine-affected-packages
             with:
               branch: ${{ github.head_ref }}
               since_ref: origin/${{ github.base_ref }}
@@ -37,8 +37,9 @@ jobs:
           matrix:
             package: ${{ fromJson(needs.determine-which-tests-to-check.outputs.packages) }}
         steps:
+          - uses: actions/checkout@v5
           - name: Install monorepo
-            uses: ./.github/install-monorepo
+            uses: ./.github/actions/install-monorepo
             with:
               branch: ${{ github.head_ref }}
           - name: Run tests
