@@ -37,8 +37,47 @@ importers:
         specifier: 21.5.3
         version: 21.5.3(@swc-node/register@1.8.0(@swc/core@1.13.20(@swc/helpers@0.5.17))(@swc/types@0.1.25)(typescript@5.9.2))(@swc/core@1.13.20(@swc/helpers@0.5.17))
 
+  packages/component-library:
+    devDependencies:
+      '@eslint/eslintrc':
+        specifier: ^3.3.1
+        version: 3.3.1
+      '@tailwindcss/postcss':
+        specifier: ^4.1.13
+        version: 4.1.13
+      '@types/node':
+        specifier: ^20.19.17
+        version: 20.19.17
+      '@types/react':
+        specifier: ^19.1.14
+        version: 19.1.14
+      '@types/react-dom':
+        specifier: ^19.1.9
+        version: 19.1.9(@types/react@19.1.14)
+      eslint:
+        specifier: ^9.36.0
+        version: 9.36.0(jiti@2.6.0)
+      eslint-config-react:
+        specifier: ^1.1.7
+        version: 1.1.7
+      react:
+        specifier: ^19.1.1
+        version: 19.1.1
+      react-dom:
+        specifier: ^19.1.1
+        version: 19.1.1(react@19.1.1)
+      tailwindcss:
+        specifier: ^4.1.13
+        version: 4.1.13
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+
   packages/next-web-app:
     dependencies:
+      '@ryuuji3/component-library':
+        specifier: workspace:*
+        version: link:../component-library
       next:
         specifier: 15.5.4
         version: 15.5.4(@babel/core@7.28.4)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.93.2)
@@ -4280,6 +4319,9 @@ packages:
       typescript:
         optional: true
 
+  eslint-config-react@1.1.7:
+    resolution: {integrity: sha512-P4Z6u68wf0BvIvZNu+U8uQsk3DcZ1CcCI1XpUkJlG6vOa+iVcSQLgE01f2DB2kXlKRcT8/3dsH+wveLgvEgbkQ==}
+
   eslint-import-resolver-node@0.3.9:
     resolution: {integrity: sha512-WFj2isz22JahUv+B788TlO3N6zL3nNJGU8CcZbPZvVEkBPaJdCV4vy5wyghty5ROFbCRnm132v8BScu5/1BQ8g==}
 
@@ -6861,6 +6903,11 @@ packages:
     peerDependencies:
       react: ^19.1.0
 
+  react-dom@19.1.1:
+    resolution: {integrity: sha512-Dlq/5LAZgF0Gaz6yiqZCf6VCcZs1ghAJyrsu84Q/GT0gV+mCxbfmKNoGRKBYMJ8IEdGPqu49YWXD02GCknEDkw==}
+    peerDependencies:
+      react: ^19.1.1
+
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
@@ -6873,6 +6920,10 @@ packages:
 
   react@19.1.0:
     resolution: {integrity: sha512-FS+XFBNvn3GTAWq26joslQgWNoFu08F4kl0J4CgdNKADkdSGXQyTCnKteIAJy96Br6YbpEU1LSzV5dYtjMkMDg==}
+    engines: {node: '>=0.10.0'}
+
+  react@19.1.1:
+    resolution: {integrity: sha512-w8nqGImo45dmMIfljjMwOGtbmC/mk4CMYhWIicdSflH91J9TyCyczcPFXJzrZ/ZXcgGRFeP6BU0BEJTw6tZdfQ==}
     engines: {node: '>=0.10.0'}
 
   read-cache@1.0.0:
@@ -13207,6 +13258,8 @@ snapshots:
       - eslint-plugin-import-x
       - supports-color
 
+  eslint-config-react@1.1.7: {}
+
   eslint-import-resolver-node@0.3.9:
     dependencies:
       debug: 3.2.7
@@ -16119,6 +16172,11 @@ snapshots:
       react: 19.1.0
       scheduler: 0.26.0
 
+  react-dom@19.1.1(react@19.1.1):
+    dependencies:
+      react: 19.1.1
+      scheduler: 0.26.0
+
   react-is@16.13.1: {}
 
   react-is@18.3.1: {}
@@ -16126,6 +16184,8 @@ snapshots:
   react@19.0.0: {}
 
   react@19.1.0: {}
+
+  react@19.1.1: {}
 
   read-cache@1.0.0:
     dependencies:
