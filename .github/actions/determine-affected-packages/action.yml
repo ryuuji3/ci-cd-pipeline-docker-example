@@ -8,7 +8,7 @@ inputs:
 outputs:
   affected_packages:
     description: 'A JSON array of affected packages and their changed files'
-    value: ${{ steps.find-changed-packages.outputs.changed_packages }}
+    value: ${{ steps.find-changed-packages.outputs.affected_packages }}
 
 runs:
   using: 'composite'
@@ -63,4 +63,4 @@ runs:
 
           # Output the affected packages JSON
           cat /tmp/affected_packages.json
-          echo $(jq -c '.' /tmp/affected_packages.json) >> $GITHUB_OUTPUT
+          echo "affected_packages=$(jq -c '.' /tmp/affected_packages.json)" >> $GITHUB_OUTPUT

@@ -50,7 +50,7 @@ jobs:
                   fi
                 done
 
-                echo $(jq -c '.' /tmp/packages_to_build.json) >> $GITHUB_OUTPUT
+                echo "packages_to_build=$(jq -c '.' /tmp/packages_to_build.json)" >> $GITHUB_OUTPUT
 
     build-and-push:
         needs: determine-which-packages-to-build
