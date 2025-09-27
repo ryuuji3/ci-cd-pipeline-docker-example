@@ -21,7 +21,7 @@ export default function Home() {
             .
           </li>
           <li className="tracking-[-.01em]">
-            Here is yet another example change to see a re-build happen times two.
+            Here is yet another example change to see a re-build happen times twoeee.
           </li>
         </ol>
 
