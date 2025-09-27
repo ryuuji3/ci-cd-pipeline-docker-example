@@ -48,11 +48,15 @@ jobs:
                 echo "[]" > /tmp/packages_to_build.json
                 for package in $PACKAGE_NAMES; do
                   current_path=$(pnpm --filter $package exec pwd)
+                  dockerfile="$current_path/Dockerfile"
 
                   # Find the Dockerfile in the package directory
-                  if [ -f "$current_path/Dockerfile" ]; then
+                  if [ -f $dockerfile ]; then
                     echo "Found Dockerfile for $package"
-                    jq --arg pkg "$package" '. + [$pkg]' /tmp/packages_to_build.json > /tmp/packages_to_build_tmp.json
+                    jq --arg package "$package" \
+                       --arg dockerfile "$dockerfile" \
+                       '. + [{ dockerfile: $dockerfile, name: $package }]' \
+                       /tmp/packages_to_build.json > /tmp/packages_to_build_tmp.json
                     mv /tmp/packages_to_build_tmp.json /tmp/packages_to_build.json
                   else
                     echo "No Dockerfile found for $package"
@@ -77,7 +81,7 @@ jobs:
             - name: Get Docker Image Name from Package
               id: get-image-name
               run: |
-                PACKAGE_NAME=${{ matrix.package }}
+                PACKAGE_NAME=${{ matrix.package.name }}
                 echo "PACKAGE_NAME=$PACKAGE_NAME"
                 VENDOR_NAME="${{ env.DOCKER_VENDOR }}"
                 # Image name doesn't have the scope (@scope/) part
@@ -123,7 +127,7 @@ jobs:
             - name: Build and push Docker image
               uses: docker/build-push-action@v6
               with:
-                  file: ./packages/next-web-app/Dockerfile
+                  file: ${{ matrix.package.dockerfile }}
                   push: false # Temporarily disabling push
                   load: true
                   tags: ${{ steps.meta.outputs.tags }}
