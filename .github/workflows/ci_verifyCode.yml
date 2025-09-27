@@ -27,6 +27,7 @@ jobs:
 
     run-tests:
         needs: determine-which-tests-to-check
+        if: ${{ needs.determine-which-tests-to-check.outputs.packages != '[]' }}
         runs-on: ubuntu-latest
         strategy:
           matrix:
@@ -49,6 +50,13 @@ jobs:
             - run-tests
         runs-on: ubuntu-latest
         steps:
+            - name: Get skips
+              id: get-skips
+              env:
+                  NEEDS: ${{ toJson(needs) }}
+              run: |
+                  # Debugging output
+                  echo $NEEDS | jq '.'
             - name: Assert that all jobs are green
               uses: re-actors/alls-green@release/v1
               with:
