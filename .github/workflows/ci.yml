@@ -31,12 +31,12 @@ jobs:
               since_ref: origin/${{ github.base_ref }}
 
     run-tests:
-        name: "Run tests (${{ matrix.package.name }})"
         needs: determine-which-tests-to-check
         runs-on: ubuntu-latest
         strategy:
           matrix:
             package: ${{ fromJson(needs.determine-which-tests-to-check.outputs.packages) }}
+        name: Run tests (${{ matrix.package.package }})
         steps:
           - uses: actions/checkout@v5
           - name: Install monorepo
@@ -45,7 +45,7 @@ jobs:
               branch: ${{ github.head_ref }}
           - name: Run tests
             run: |
-              pnpm --filter ${{ matrix.package.name }} --if-present test
+              pnpm --filter ${{ matrix.package.package }} --if-present test
 
     verify-pr-title:
         name: Verify PR Title
