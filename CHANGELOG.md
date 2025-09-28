@@ -1,3 +1,13 @@
+## 1.3.0 (2025-09-28)
+
+### 🚀 Features
+
+- **Farewell:** improved message ([#8](https://github.com/ryuuji3/ci-cd-pipeline-docker-example/pull/8))
+
+### ❤️ Thank You
+
+- Josh
+
 ## 1.2.0 (2025-09-28)
 
 ### 🚀 Features
