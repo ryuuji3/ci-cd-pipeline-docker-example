@@ -86,6 +86,7 @@ jobs:
         strategy:
             matrix:
                 package: ${{ fromJson(needs.determine-which-packages-to-build.outputs.packages_to_build) }}
+        name: Build & Push ${{ matrix.package.name }}
         steps:
             - name: Checkout repository
               uses: actions/checkout@v5
