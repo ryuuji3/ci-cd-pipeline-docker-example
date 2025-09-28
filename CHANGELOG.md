@@ -1,3 +1,13 @@
+## 1.2.0 (2025-09-28)
+
+### 🚀 Features
+
+- new component ([#7](https://github.com/ryuuji3/ci-cd-pipeline-docker-example/pull/7))
+
+### ❤️ Thank You
+
+- Josh
+
 ## 1.1.0 (2025-09-27)
 
 ### 🚀 Features

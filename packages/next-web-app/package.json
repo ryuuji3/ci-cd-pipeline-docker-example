@@ -1,6 +1,6 @@
 {
   "name": "@ryuuji3/next-web-app",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "scripts": {
     "dev": "nx next:dev --turbopack",
     "build": "nx next:build --turbopack",
