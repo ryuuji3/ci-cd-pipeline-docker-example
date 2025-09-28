@@ -9,5 +9,5 @@ import Farewell from './Farewell';
 test('should render the provided name', () => {
     const { container } = render(<Farewell name="World" />);
 
-    expect(container).toHaveTextContent('Goodbye, World');
+    expect(container).toHaveTextContent('Goodbye, World!');
 });
