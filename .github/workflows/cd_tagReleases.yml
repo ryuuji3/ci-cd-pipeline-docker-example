@@ -11,13 +11,20 @@ jobs:
         runs-on: ubuntu-latest
         permissions:
           contents: write
+          actions: read
         steps:
+            # Using our CI/CD bot so we can bypass branch restrictions
+            - uses: actions/create-github-app-token@v1
+              id: app-token
+              with:
+                app-id: ${{ vars.CI_CD_BOT_APP_ID }}
+                private-key: ${{ secrets.CI_CD_BOT_PRIVATE_KEY }}
             - uses: actions/checkout@v5
             - name: Install monorepo
               uses: ./.github/actions/install-monorepo
               with:
                 branch: ${{ github.event.base_ref }}
-                git_token: ${{ secrets.GIT_TOKEN }}
+                git_token: ${{ steps.app-token.outputs.token }}
             - name: Set author
               run: |
                 git config user.email "mori.ryuuji3@gmail.com"
