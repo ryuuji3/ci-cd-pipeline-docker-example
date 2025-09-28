@@ -5,7 +5,8 @@
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint"
   },
   "keywords": [],
   "author": "ryuuji3 <mori.ryuuji3@gmail.com>",
