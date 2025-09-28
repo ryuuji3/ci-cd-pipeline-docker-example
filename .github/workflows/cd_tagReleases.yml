@@ -14,11 +14,11 @@ jobs:
           actions: read
         steps:
             # Using our CI/CD bot so we can bypass branch restrictions
-            - uses: actions/create-github-app-token@v1
+            - uses: peter-murray/workflow-application-token-action@v3
               id: app-token
               with:
-                app-id: ${{ vars.CI_CD_BOT_APP_ID }}
-                private-key: ${{ secrets.CI_CD_BOT_PRIVATE_KEY }}
+                application_id: ${{ vars.CI_CD_BOT_APP_ID }}
+                application_private_key: ${{ secrets.CI_CD_BOT_PRIVATE_KEY }}
             - uses: actions/checkout@v5
               with:
                 token: ${{ steps.app-token.outputs.token }}
