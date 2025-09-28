@@ -21,13 +21,18 @@ jobs:
             packages_to_build: ${{ steps.packages-to-build.outputs.packages_to_build }}
         steps:
             - uses: actions/checkout@v5
+              with:
+                  fetch-depth: 0
+            - uses: WyriHaximus/github-action-get-previous-tag@v1
+              id: previous-tag
+              with:
+                  prefix: v
             - name: Determine affected packages
               id: determine-affected-packages
               uses: ./.github/actions/determine-affected-packages
               with:
                 branch: ${{ github.event.base_ref }}
-                # Want to compare to previous commit on branch
-                since_ref: ${{ github.event.before }}
+                since_ref: ${{ steps.previous-tag.outputs.tag }}
 
             # Much easier to use jq to parse JSON on a file
             - name: Create file from output
