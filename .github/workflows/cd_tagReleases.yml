@@ -11,6 +11,11 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v5
+            - name: Set author
+              run: |
+                git config user.email "mori.ryuuji3@gmail.com"
+                git config user.name "Josh Lalonde"
+                  
             - name: Install monorepo
               uses: ./.github/actions/install-monorepo
               with:
