@@ -20,19 +20,17 @@ jobs:
                 app-id: ${{ vars.CI_CD_BOT_APP_ID }}
                 private-key: ${{ secrets.CI_CD_BOT_PRIVATE_KEY }}
             - uses: actions/checkout@v5
+              with:
+                token: ${{ steps.app-token.outputs.token }}
             - name: Install monorepo
               uses: ./.github/actions/install-monorepo
               with:
                 branch: ${{ github.event.base_ref }}
                 git_token: ${{ steps.app-token.outputs.token }}
-            - name: Set author
+            - name: Tag Release
               run: |
                 git config user.email "mori.ryuuji3@gmail.com"
                 git config user.name "Josh Lalonde"
-            - name: Tag Release
-              run: |
                 pnpm nx release --skip-publish
-            - name: Push tags
-              run: |
                 git push
                 git push --tags
