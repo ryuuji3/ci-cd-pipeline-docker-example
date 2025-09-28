@@ -21,12 +21,11 @@ jobs:
                 application_private_key: ${{ secrets.CI_CD_BOT_PRIVATE_KEY }}
             - uses: actions/checkout@v5
               with:
+                fetch-depth: 0
                 token: ${{ steps.app-token.outputs.token }}
+                ref: ${{ github.event.base_ref }}
             - name: Install monorepo
               uses: ./.github/actions/install-monorepo
-              with:
-                branch: ${{ github.event.base_ref }}
-                git_token: ${{ steps.app-token.outputs.token }}
             - name: Tag Release
               run: |
                 git config user.email "mori.ryuuji3@gmail.com"

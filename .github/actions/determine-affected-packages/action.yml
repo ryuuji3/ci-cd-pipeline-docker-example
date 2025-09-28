@@ -17,9 +17,10 @@ runs:
   using: 'composite'
   steps:
       - uses: actions/checkout@v5
-      - uses: ./.github/actions/install-monorepo
         with:
-          branch: ${{ inputs.branch }}
+          fetch-depth: 0
+          ref: ${{ inputs.branch }}
+      - uses: ./.github/actions/install-monorepo
       
       - name: Find affected packages
         shell: bash

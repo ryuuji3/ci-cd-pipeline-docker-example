@@ -15,9 +15,10 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v5
-            - uses: ./.github/actions/install-monorepo
               with:
-                branch: ${{ github.head_ref }}
+                  fetch-depth: 0
+                  ref: ${{ github.head_ref }}
+            - uses: ./.github/actions/install-monorepo
             - name: Check PR title
               env:
                 PR_TITLE: ${{ github.event.pull_request.title }}

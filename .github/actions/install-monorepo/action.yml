@@ -1,29 +1,9 @@
 name: Install Monorepo
 description: A GitHub Action to install the monorepo
 
-inputs:
-  branch:
-    description: 'The git reference of the current branch'
-    required: true
-  git_token:
-    description: 'Pass a PAT so we can trigger workflows when pushing commits'
-    required: false
-
 runs:
   using: 'composite'
   steps:
-      - name: Checkout with PAT
-        uses: actions/checkout@v5
-        if: ${{ inputs.git_token != null }}
-        with:
-          fetch-depth: 0
-          ref: ${{ inputs.branch }}
-          token: ${{ inputs.git_token }}
-      - name: Checkout without PAT
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-          ref: ${{ inputs.branch }}
       - uses: pnpm/action-setup@v4
         with:
           run_install: false

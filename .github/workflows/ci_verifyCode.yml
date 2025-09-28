@@ -35,10 +35,11 @@ jobs:
         name: Run tests (${{ matrix.package.package }})
         steps:
           - uses: actions/checkout@v5
+            with:
+              fetch-depth: 0
+              ref: ${{ github.head_ref }}
           - name: Install monorepo
             uses: ./.github/actions/install-monorepo
-            with:
-              branch: ${{ github.head_ref }}
           - name: Run tests
             run: |
               pnpm --filter ${{ matrix.package.package }} --if-present test
