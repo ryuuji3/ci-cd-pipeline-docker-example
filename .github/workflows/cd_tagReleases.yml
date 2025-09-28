@@ -26,3 +26,6 @@ jobs:
             - name: Tag Release
               run: |
                 pnpm nx release --skip-publish
+            - name: Push tags
+              run: |
+                git push --tags
