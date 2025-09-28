@@ -1,6 +1,7 @@
 name: CD - Build and Publish Docker Image
 
 on:
+    workflow_dispatch: # allow re-trying after i break things 
     push:
         # I don't have multiple environments to simulate, so I'll just use tag-based for now
         # The use case for main would be if we had a staging and production environment;

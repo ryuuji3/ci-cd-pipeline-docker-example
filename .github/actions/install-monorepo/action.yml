@@ -12,11 +12,18 @@ inputs:
 runs:
   using: 'composite'
   steps:
-      - uses: actions/checkout@v5
+      - name: Checkout with PAT
+        uses: actions/checkout@v5
+        if: ${{ inputs.git_token != null }}
         with:
           fetch-depth: 0
           ref: ${{ inputs.branch }}
           token: ${{ inputs.git_token }}
+      - name: Checkout without PAT
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.branch }}
       - uses: pnpm/action-setup@v4
         with:
           run_install: false
