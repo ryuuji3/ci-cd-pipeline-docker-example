@@ -9,20 +9,18 @@ on:
 jobs:
     tag-release:
         runs-on: ubuntu-latest
+        permissions:
+          contents: write
         steps:
             - uses: actions/checkout@v5
-              with:
-                  # Use a PAT to trigger the CD workflows
-                  token: ${{ secrets.GIT_TOKEN }}
-            - name: Set author
-              run: |
-                git config user.email "mori.ryuuji3@gmail.com"
-                git config user.name "Josh Lalonde"
-                  
             - name: Install monorepo
               uses: ./.github/actions/install-monorepo
               with:
                 branch: ${{ github.event.base_ref }}
+            - name: Set author
+              run: |
+                git config user.email "mori.ryuuji3@gmail.com"
+                git config user.name "Josh Lalonde"
             - name: Tag Release
               run: |
                 pnpm nx release --skip-publish
