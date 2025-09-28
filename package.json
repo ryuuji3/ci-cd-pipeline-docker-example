@@ -11,23 +11,24 @@
   "devDependencies": {
     "@commitlint/cli": "^20.0.0",
     "@commitlint/config-conventional": "^20.0.0",
-    "@eslint/js": "^9.36.0",
-    "@nx/eslint": "21.5.3",
-    "@nx/next": "21.5.3",
+    "@eslint/js": "catalog:eslint",
+    "@nx/eslint": "catalog:nx",
+    "@nx/next": "catalog:nx",
     "@swc-node/register": "1.8.0",
-    "eslint": "~8.57.1",
-    "eslint-plugin-react": "^7.37.5",
+    "eslint": "catalog:eslint",
+    "eslint-plugin-react": "catalog:react",
     "globals": "^16.4.0",
     "husky": "^9.1.7",
     "jiti": "^2.6.0",
     "lerna": "^9.0.0",
-    "nx": "21.5.3",
+    "nx": "catalog:nx",
+    "typescript": "^5.9.2",
     "typescript-eslint": "^8.44.1"
   },
   "dependencies": {
     "next": "~15.2.4",
-    "react": "19.0.0",
-    "react-dom": "19.0.0"
+    "react": "catalog:react",
+    "react-dom": "catalog:react"
   },
   "scripts": {
     "prepare": "husky",
