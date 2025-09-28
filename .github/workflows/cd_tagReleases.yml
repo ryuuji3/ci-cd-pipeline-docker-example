@@ -11,6 +11,9 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v5
+              with:
+                  # Use a PAT to trigger the CD workflows
+                  token: ${{ secrets.GIT_TOKEN }}
             - name: Set author
               run: |
                 git config user.email "mori.ryuuji3@gmail.com"
