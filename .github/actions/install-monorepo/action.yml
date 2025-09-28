@@ -5,6 +5,9 @@ inputs:
   branch:
     description: 'The git reference of the current branch'
     required: true
+  git_token:
+    description: 'Pass a PAT so we can trigger workflows when pushing commits'
+    required: false
 
 runs:
   using: 'composite'
@@ -13,8 +16,7 @@ runs:
         with:
           fetch-depth: 0
           ref: ${{ inputs.branch }}
-          # Use a PAT to allow recursive workflows
-          token: ${{ secrets.GIT_TOKEN }}
+          token: ${{ inputs.git_token }}
       - uses: pnpm/action-setup@v4
         with:
           run_install: false

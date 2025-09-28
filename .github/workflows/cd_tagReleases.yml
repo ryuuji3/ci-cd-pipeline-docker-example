@@ -17,6 +17,7 @@ jobs:
               uses: ./.github/actions/install-monorepo
               with:
                 branch: ${{ github.event.base_ref }}
+                git_token: ${{ secrets.GIT_TOKEN }}
             - name: Set author
               run: |
                 git config user.email "mori.ryuuji3@gmail.com"
